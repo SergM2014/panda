@@ -17,19 +17,22 @@
 4)  docker exec -i database mysql -upanda -ppanda panda < panda.sql
 
 
-5) docker-compose exec app bash
+5) exit
+
+
+6) docker-compose exec app bash
 
    
 
-6) composer install
+7) composer install
 
 
   
-7) chmod 777 logs.txt
+8) chmod 777 logs.txt
 
     
    
-8) now you can visit  http://localhost:8080
+9) now you can visit  http://localhost:8080
 
 
 
