@@ -12,11 +12,6 @@ class Dispatcher
 
     public function __construct(private array $routes) {}
     
-    /**
-     * run
-     *
-     * @return void
-     */
     public function run(): void
     {
         $contr = $this->getRoutingFromUrl();
@@ -32,18 +27,25 @@ class Dispatcher
         $argument = isset($this->argument)? (int)$this->argument : null;
         $myClass->$method($argument);
     }
-        
-    /**
-     * getRoutingFromUrl
-     *
-     * @return array
-     */
+
     private function getRoutingFromUrl(): array
     {
-    
-        $keys = array_keys($this->routes);
-        
-        for($i = 0; $i < count($keys); $i++){
+        $methods = ['get', 'post', 'any'];
+        foreach($methods as $method ){
+            $controller = $this->handle($method);
+            if(!empty($controller) AND (strtolower($_SERVER['REQUEST_METHOD']) == $method OR $method == 'any' )) {
+                return $controller;
+             }
+        }
+        return NOT_FOUND_ROUTE;
+    }
+
+    private function handle($method)
+    {
+         if(!isset($this->routes[$method])) return [];
+         $keys = array_keys($this->routes[$method]);
+  
+         for($i = 0; $i < count($keys); $i++){
             $keys[$i] = trim($keys[$i], '/');
         }
 
@@ -75,10 +77,9 @@ class Dispatcher
 
         if(!isset($uri)) $uri = '';
         $key = array_search($uri, $keys);
-        if ($key === false) return NOT_FOUND_ROUTE;
-        $array = array_values($this->routes);
+        if ($key === false) return [];
+        $array = array_values($this->routes[$method]);
 
         return $array[$key];
-        
     }
 }

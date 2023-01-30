@@ -42,7 +42,7 @@ class User extends Controller
         return view ('admin.php', ['message' => 'Greetings you are registered', 'level' => 'success' ]);
     }
 
-    public function getUser(): mixed
+    public function login(): mixed
     {
         $this->checkCsrf();
         

@@ -5,6 +5,7 @@ declare(strict_types=1);
 session_start();
 
 require_once 'vendor/autoload.php';
+$routes = [];
 require_once 'routes.php';
 
 $_SESSION['token']??= bin2hex(random_bytes(32));
@@ -45,4 +46,19 @@ function redirectToIndexPage()
 {
     header('Location: '.URL);
     exit;
+}
+
+function Get($key, $arg)
+{
+    $GLOBALS['routes']['get'][$key] = $arg;
+}
+
+function Post($key, $arg)
+{
+    $GLOBALS['routes']['post'][$key] = $arg; 
+}
+
+function Any($key, $arg)
+{
+    $GLOBALS['routes']['any'][$key] = $arg; 
 }

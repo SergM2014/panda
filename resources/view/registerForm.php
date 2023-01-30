@@ -7,7 +7,7 @@ require_once "templates/header.php";
 
 <?php  if(@$_POST['email']) $encodedPostEmail = htmlspecialchars($_POST['email'], ENT_QUOTES, "UTF-8"); ?>
 
-<form action="addUser" method="POST">
+<form action="/register" method="POST">
   <input type="hidden" value="<?= $_SESSION['token'] ?>" name="token" >
   <div class="mb-3">
     <label for="email" class="form-label">Email address</label>
