@@ -8,57 +8,62 @@ require_once 'vendor/autoload.php';
 $routes = [];
 require_once 'routes.php';
 
-$_SESSION['token']??= bin2hex(random_bytes(32));
+try {
+    $_SESSION['token'] ??= bin2hex(string: random_bytes(length: 32));
+} catch (\Random\RandomException $e) {
 
-define('DATA_LOGS', __DIR__ . '/logs.txt');
-define('NOT_FOUND_ROUTE', [ Src\Actions\NotFound::class, 'report']);
-
-define('URL', 'http://localhost:8080');
-define('HOST', 'database'); 
-define('USER', 'panda'); 
-define('PASSWORD', 'panda'); 
-define('NAME_BD', 'panda');
-
-define('DEBUG_MODE', true ); 
-
-if (DEBUG_MODE){
-    ini_set("display_errors","1");
-    ini_set("display_startup_errors","1");
-    ini_set('error_reporting', E_ALL);
 }
 
-function dd($arg)
+const DATA_LOGS = __DIR__ . '/logs.txt';
+const NOT_FOUND_ROUTE = [Src\Actions\NotFound::class, 'report'];
+
+const URL = 'http://localhost:8080';
+const HOST = 'database';
+const USER = 'panda';
+const PASSWORD = 'panda';
+const NAME_BD = 'panda';
+
+const DEBUG_MODE = true;
+
+if (DEBUG_MODE){
+    ini_set(option: "display_errors",value: "1");
+    ini_set(option: "display_startup_errors",value: "1");
+    ini_set(option: 'error_reporting', value: E_ALL);
+}
+
+function dd($arg): void
 {
     echo "<br>";
     echo "<pre>";
-     var_dump($arg);
+     var_dump(value: $arg);
     echo "<br>";
 
     exit();
 }
 
-function view(string $view, ?array $args=null) {
-    if(isset($args)) extract($args);
+function view(string $view, ?array $args=null): void
+{
+    if(isset($args)) extract(array: $args);
     include_once ($_SERVER['DOCUMENT_ROOT'].'/../resources/view/'.$view);
 }
 
-function redirectToIndexPage()
+function redirectToIndexPage(): void
 {
-    header('Location: '.URL);
+    header(header: 'Location: '.URL);
     exit;
 }
 
-function Get($key, $arg)
+function Get($key, $arg): void
 {
     $GLOBALS['routes']['get'][$key] = $arg;
 }
 
-function Post($key, $arg)
+function Post($key, $arg): void
 {
     $GLOBALS['routes']['post'][$key] = $arg; 
 }
 
-function Any($key, $arg)
+function Any($key, $arg): void
 {
     $GLOBALS['routes']['any'][$key] = $arg; 
 }
