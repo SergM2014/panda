@@ -12,14 +12,14 @@ use Src\Repositories\Survey;
 
 
 return [
-    LoggerInterface::class => DI\factory(function () {
-        $logger = new Logger('mylog');
-        $fileHandler = new StreamHandler(DATA_LOGS, Logger::DEBUG);
-        $fileHandler->setFormatter(new LineFormatter());
-        $logger->pushHandler($fileHandler);
+    LoggerInterface::class => DI\factory(factory: function (): Logger {
+        $logger = new Logger(name: 'mylog');
+        $fileHandler = new StreamHandler(stream: DATA_LOGS, level: Logger::DEBUG);
+        $fileHandler->setFormatter(formatter: new LineFormatter());
+        $logger->pushHandler(handler: $fileHandler);
 
         return $logger;
     }),
-    AuthentificationInterface::class => DI\get(User::class),
-    SurveyRepositoryInterface::class => DI\get(Survey::class),   
+    AuthentificationInterface::class => DI\get(entryName: User::class),
+    SurveyRepositoryInterface::class => DI\get(entryName: Survey::class),   
 ];
