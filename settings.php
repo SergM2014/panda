@@ -8,11 +8,7 @@ require_once 'vendor/autoload.php';
 $routes = [];
 require_once 'routes.php';
 
-try {
-    $_SESSION['token'] ??= bin2hex(string: random_bytes(length: 32));
-} catch (\Random\RandomException $e) {
-
-}
+$_SESSION['token'] ??= bin2hex(string: random_bytes(length: 32));
 
 const DATA_LOGS = __DIR__ . '/logs.txt';
 const NOT_FOUND_ROUTE = [Src\Actions\NotFound::class, 'report'];
