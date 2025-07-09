@@ -21,10 +21,10 @@ trait ExceptionHandler
     public function prozessException(string $messageToLog): void
     {
         try {
-            $this->errorOutput->report('something went wrong');
+            $this->errorOutput->report(ex: 'something went wrong');
             throw new \Exception();
         } catch (\Exception $ex) {
-            $this->logger->info($messageToLog);
+            $this->logger->info(message: $messageToLog);
         }
     }
 }
