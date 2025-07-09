@@ -15,5 +15,7 @@ class Controller
             header(header: $_SERVER['SERVER_PROTOCOL'] . ' 405 Method Not Allowed');
             exit;
         }
+        
+        return;
     }
 }
