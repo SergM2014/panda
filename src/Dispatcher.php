@@ -17,10 +17,10 @@ class Dispatcher
         $contr = $this->getRoutingFromUrl();
 
         $builder = new ContainerBuilder();
-        $builder->addDefinitions($_SERVER['DOCUMENT_ROOT'].'/../DiSettings.php');
+        $builder->addDefinitions(definitions: $_SERVER['DOCUMENT_ROOT'].'/../DiSettings.php');
         $container = $builder->build();
  
-        $myClass = $container->get($contr[0]);
+        $myClass = $container->get(name: $contr[0]);
       
         $method = $contr[1];
 
@@ -32,43 +32,43 @@ class Dispatcher
     {
         $methods = ['get', 'post', 'any'];
         foreach($methods as $method ){
-            $controller = $this->handle($method);
-            if(!empty($controller) AND (strtolower($_SERVER['REQUEST_METHOD']) == $method OR $method == 'any' )) {
+            $controller = $this->handle(method: $method);
+            if(!empty($controller) AND (strtolower(string: $_SERVER['REQUEST_METHOD']) == $method OR $method == 'any' )) {
                 return $controller;
              }
         }
         return NOT_FOUND_ROUTE;
     }
 
-    private function handle($method)
+    private function handle($method): mixed
     {
          if(!isset($this->routes[$method])) return [];
-         $keys = array_keys($this->routes[$method]);
+         $keys = array_keys(array: $this->routes[$method]);
   
-         for($i = 0; $i < count($keys); $i++){
-            $keys[$i] = trim($keys[$i], '/');
+         for($i = 0; $i < count(value: $keys); $i++){
+            $keys[$i] = trim(string: $keys[$i], characters: '/');
         }
 
-        $url = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
+        $url = rtrim(string: parse_url(url: $_SERVER['REQUEST_URI'], component: PHP_URL_PATH), characters: '/');
 
-        $uriSegments = explode("/", $url);
+        $uriSegments = explode(separator: "/", string: $url);
 
         if(isset($uriSegments[1]) AND $uriSegments[1] == 'api') {
-            $uri = implode('/',[$uriSegments[1], $uriSegments[2]]);
+            $uri = implode(separator: '/',array: [$uriSegments[1], $uriSegments[2]]);
 
             if(isset($uriSegments[3])) {
                 $this->argument = $uriSegments[3];
                 $uriSegments[3] = '{argument}';
-                $uri = implode('/',[$uri, $uriSegments[3]]);
+                $uri = implode(separator: '/',array: [$uri, $uriSegments[3]]);
             }
 
             if(isset($uriSegments[4])) {
-                $uri = implode('/',[$uri, $uriSegments[4]]);
+                $uri = implode(separator: '/', array: [$uri, $uriSegments[4]]);
             }
 
         } else {
-            if(isset($uriSegments[1]) AND isset($uriSegments[2])) $uri = implode('/',[$uriSegments[1], $uriSegments[2]]);
-            if(isset($uriSegments[2]) AND isset($uriSegments[3])) $uri = implode('/',[$uri, $uriSegments[3]]);
+            if(isset($uriSegments[1]) AND isset($uriSegments[2])) $uri = implode(separator: '/',array: [$uriSegments[1], $uriSegments[2]]);
+            if(isset($uriSegments[2]) AND isset($uriSegments[3])) $uri = implode(separator: '/',array: [$uri, $uriSegments[3]]);
          } 
 
         if(!isset($uri) ) { 
@@ -76,9 +76,9 @@ class Dispatcher
         }
 
         if(!isset($uri)) $uri = '';
-        $key = array_search($uri, $keys);
+        $key = array_search(needle: $uri, haystack: $keys);
         if ($key === false) return [];
-        $array = array_values($this->routes[$method]);
+        $array = array_values(array: $this->routes[$method]);
 
         return $array[$key];
     }
