@@ -6,13 +6,13 @@ namespace Src\Actions;
 
 class Controller
 {
-    public function checkCsrf()
+    public function checkCsrf(): void
     {
         if (!isset($_POST['token']) || $_POST['token'] !== $_SESSION['token']) {
 
             if(isset($_POST['ajax'])) die();
             // return 405 http status code
-            header($_SERVER['SERVER_PROTOCOL'] . ' 405 Method Not Allowed');
+            header(header: $_SERVER['SERVER_PROTOCOL'] . ' 405 Method Not Allowed');
             exit;
         }
     }
