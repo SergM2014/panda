@@ -17,23 +17,23 @@ class DataBase {
     
     private static $connection;
 
-    public static function conn()
+    public static function conn(): mixed
     {
 
-        if(is_object(self::$connection))  return self::$connection;
+        if(is_object(value: self::$connection))  return self::$connection;
 
         try{
-            self::$connection = new \PDO('mysql:dbname='.NAME_BD.';host='.HOST.'', USER,
-                PASSWORD, [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"]);
+            self::$connection = new \PDO(dsn: 'mysql:dbname='.NAME_BD.';host='.HOST.'', username: USER,
+                password: PASSWORD, options: [\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"]);
 
-            self::$connection->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_OBJ);
+            self::$connection->setAttribute(attribute: \PDO::ATTR_DEFAULT_FETCH_MODE, value: \PDO::FETCH_OBJ);
 
-            self::$connection ->exec("SET time_zone = 'Europe/Kiev'");
-            self::$connection ->exec("SET sql_mode = ''");
+            self::$connection ->exec(statement: "SET time_zone = 'Europe/Kiev'");
+            self::$connection ->exec(statement: "SET sql_mode = ''");
 
             if(DEBUG_MODE){
                 //на время разработки
-                self::$connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
+                self::$connection->setAttribute(attribute: \PDO::ATTR_ERRMODE, value: \PDO::ERRMODE_WARNING);
             }
 
             return self::$connection;
