@@ -10,53 +10,58 @@ class User extends Controller
 {
     public function __construct(private AuthentificationInterface $userRepository) {}
 
-    public function index(): mixed
+    public function index(): void
     {
-        return view('index.php');
+        view(view: 'index.php');
     }
 
-    public function registerForm(): mixed
+    public function registerForm(): void
     {
-        return view('registerForm.php');
+        view(view: 'registerForm.php');
     }
 
-    public function loginForm(): mixed
+    public function loginForm(): void
     {
-        return view('loginForm.php');
+        view(view: 'loginForm.php');
     }
 
-    public function addUser(): mixed
+    public function addUser(): void
     {     
         $this->checkCsrf();
         
         $validationErrors = $this->checkValidationError();
 
-        if (!$this->userRepository->uniqueEmail($_POST['email'])) $validationErrors['email'] = 'Email is already used!';
+        if (!$this->userRepository->uniqueEmail(email: $_POST['email'])) $validationErrors['email'] = 'Email is already used!';
 
-        if ($validationErrors) return view ('registerForm.php', ['errors' => $validationErrors ]);
-        
+        if ($validationErrors) {
+            view (view: 'registerForm.php', args: ['errors' => $validationErrors ]);
+            return;
+        }
         $this-> userRepository->store();
 
         $_SESSION['admin'] = $_POST['email'];
 
-        return view ('admin.php', ['message' => 'Greetings you are registered', 'level' => 'success' ]);
+        view (view: 'admin.php', args: ['message' => 'Greetings you are registered', 'level' => 'success' ]);
     }
 
-    public function login(): mixed
+    public function login(): void
     {
         $this->checkCsrf();
         
         $validationErrors = $this->checkValidationError();
-        if ($validationErrors) return view ('loginForm.php', ['errors' => $validationErrors ]);
-
+        if ($validationErrors) {
+            view (view: 'loginForm.php', args: ['errors' => $validationErrors ]);
+            return;
+        }
         $user = $this->userRepository->getUser();
 
         if ($user) {
             $_SESSION['admin'] = $user->email;
-            return view ('admin.php', ['message' => 'Greetings you are loged in', 'level' => 'success' ]);
+            view (view: 'admin.php', args: ['message' => 'Greetings you are loged in', 'level' => 'success' ]);
+            return;
         }
 
-        return view ('loginForm.php', ['message' => 'wrong credentials']);
+        view (view: 'loginForm.php', args: ['message' => 'wrong credentials']);
     }
 
     private function checkValidationError(): array
@@ -66,31 +71,23 @@ class User extends Controller
 
         $validationErrors = [];
 
-        if (empty($email)) {
-            $validationErrors['email'] = 'Input required';
-        }
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $validationErrors['email'] = 'email required';
-        }
+        if (empty($email)) $validationErrors['email'] = 'Input required';
+        
+        if (!filter_var(value: $email, filter: FILTER_VALIDATE_EMAIL)) $validationErrors['email'] = 'email required';
+        
+        if (empty($password)) $validationErrors['password'] = 'Input required';
+        
+        if (strlen(string: $password) < 6) $validationErrors['password'] = 'Min 6 characters are required';
 
-        if (empty($password)) {
-            $validationErrors['password'] = 'Input required';
-        }
-        if (strlen($password) < 6) {
-            $validationErrors['password'] = 'Min 6 characters are required';
-        }
+        if (!empty($validationErrors)) return $validationErrors;
 
-        if (!empty($validationErrors)) {
-            return $validationErrors;
-         }
-
-         return [];
+        return [];
     }
 
-    public function logout(): mixed
+    public function logout(): void
     {
         unset($_SESSION['admin']);
 
-        return view ('index.php', ['message' => 'Greetings you are logouted' ]);
+        view (view: 'index.php', args: ['message' => 'Greetings you are logouted' ]);
     }
 }
