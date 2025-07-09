@@ -13,36 +13,41 @@ class Survey extends Controller
         if(!isset($_SESSION['admin'])) redirectToIndexPage();
     }
 
-    public function index(): mixed
+    public function index(): void
     {
         $this->preventRepeatedAlert();
-
-        return view ('admin.php');
+        view (view: 'admin.php');
     }
 
-    public function create():mixed
+    public function create(): void
     {
-        return view ('createSurvey.php');
+         view (view: 'createSurvey.php');
     }
 
-    public function store(): mixed
+    public function store(): void
     {
         $this->checkCsrf();
 
         $validationErrors = $this->checkValidationError();
 
-        if (!empty($validationErrors)) return view ('createSurvey.php', ['errors' => $validationErrors ]);
+        if (!empty($validationErrors)) {
+            view (view: 'createSurvey.php', args: ['errors' => $validationErrors ]);
+            return;
+        }
 
         $jsons = $this->getResponsesWithVotes();
 
-        if($this->repository->store($jsons))  return view ('admin.php', ['message' => 'A new Survey was created', 'level' =>'success']);
+        if($this->repository->store(jsons: $jsons)) { 
+            view (view: 'admin.php', args: ['message' => 'A new Survey was created', 'level' =>'success']);
+            return;
+        }
 
-        return view ('createSurvey.php', ['message' => 'creation of new Survay is failed' ]);
+        view (view: 'createSurvey.php', args: ['message' => 'creation of new Survay is failed' ]);
     }
 
     public function allByUser(): void
     {
-        echo json_encode($this->repository->getByUserId());
+        echo json_encode(value: $this->repository->getByUserId());
     }
 
     public function delete(): bool
@@ -54,31 +59,35 @@ class Survey extends Controller
         return false;
     }
 
-    public function edit():mixed
+    public function edit(): void
     {
         $survey = $this->repository->getSurvey(); 
 
-        return view ('editSurvey.php', ['survey' => $survey]);
+        view (view: 'editSurvey.php', args: ['survey' => $survey]);
     }
 
-    public function update()
+    public function update(): void
     {
         $this->checkCsrf();
 
         $validationErrors = $this->checkValidationError();
 
-        if (!empty($validationErrors)){
+        if (!empty($validationErrors)) {
             $survey = $this->repository->getSurvey();
-            return view ('editSurvey.php', ['survey' => $survey, 'errors' => $validationErrors ]);
+            view (view: 'editSurvey.php', args: ['survey' => $survey, 'errors' => $validationErrors ]);
+            return;
         } 
 
         $jsons = $this->getResponsesWithVotes();
 
-        if($this->repository->update($jsons))  return view ('admin.php', [
+        if($this->repository->update(jsons: $jsons)) { 
+            view (view: 'admin.php', args: [
             'message' => 'the Survey#'.$_POST['id'] .' was updated', 'level' =>'success'
-        ]);
+            ]);
+        return;
+        }
 
-        return view ('editSurvey.php', ['message' => 'update of  Survay is failed' ]);
+        view (view: 'editSurvey.php', args: ['message' => 'update of  Survay is failed' ]);
     }
 
     private function checkValidationError(): array
@@ -102,24 +111,24 @@ class Survey extends Controller
         return $validationErrors;    
     }
 
-    private function getResponsesWithVotes()
+    private function getResponsesWithVotes(): array
     {
         $responseArr = [];
         foreach ($_POST['response'] as $key => $value) {
-            if(strlen($value) > 0) $responseArr[$key] = $value;
+            if(strlen(string: $value) > 0) $responseArr[$key] = $value;
         }
-        $keys = array_keys($responseArr);
+        $keys = array_keys(array: $responseArr);
 
         $voteArr = [];
         foreach ($_POST['vote'] as $key => $value) {
-            if(in_array($key, $keys)) $voteArr[$key] = (int)$value;
+            if(in_array(needle: $key, haystack: $keys)) $voteArr[$key] = (int)$value;
         }
-        $responseArr = array_values($responseArr);
-        $voteArr = array_values($voteArr);
+        $responseArr = array_values(array: $responseArr);
+        $voteArr = array_values(array: $voteArr);
 
         $arr = [];
-        $arr['responses'] = json_encode($responseArr, JSON_FORCE_OBJECT);
-        $arr['votes'] = json_encode($voteArr, JSON_FORCE_OBJECT);
+        $arr['responses'] = json_encode(value: $responseArr, flags: JSON_FORCE_OBJECT);
+        $arr['votes'] = json_encode(value: $voteArr, flags: JSON_FORCE_OBJECT);
 
         return $arr;
     }
@@ -127,23 +136,28 @@ class Survey extends Controller
     private function checkOnlyNumber(): bool
     {
         foreach ($_POST['vote'] as $vote) {
-            if(strlen($vote) < 1)  $vote = 0; 
-            if(!is_int((int)$vote)) return false;
+            if(strlen(string: $vote) < 1)  $vote = 0; 
+            if(!is_int(value: (int)$vote)) return false;
         }
 
         return true;
     }
 
-    private function preventRepeatedAlert(): mixed
+    private function preventRepeatedAlert(): void
     {
-        if(isset($_SESSION['id']) AND isset($_GET['id']) AND $_SESSION['id'] == $_GET['id']) return view ('admin.php');
+        if(isset($_SESSION['id']) AND isset($_GET['id']) AND $_SESSION['id'] == $_GET['id']) {
+            view (view: 'admin.php');
+            return;
+            }
+
         if(isset($_GET['delete']))  { 
             $_SESSION['id'] = $_GET['id'];
-            return view ('admin.php', [
+            view (view: 'admin.php', args: [
                 'message'=> 'The Survey#'.$_GET['id'].' was deleted!',
                 'level' => 'success'
             ]);
+            return;
         }
-        return view ('admin.php');
+        view (view: 'admin.php');
     }
 }
