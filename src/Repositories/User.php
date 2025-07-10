@@ -11,7 +11,7 @@ class User extends DataBase implements AuthentificationInterface
 {
     public function uniqueEmail(string $email): bool
     {
-        if (strlen($email) < 1) return true;
+        if (strlen(string: $email) < 1) return true;
 
         try {
             $sql = "SELECT `email`  FROM `users` WHERE `email`= ? ";
@@ -20,7 +20,7 @@ class User extends DataBase implements AuthentificationInterface
             $stmt->execute();
             $password = $stmt->fetch();
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
         
         return !$password;
@@ -28,7 +28,7 @@ class User extends DataBase implements AuthentificationInterface
 
     public function store(): bool
     {
-        $password= password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $password= password_hash(password: $_POST['password'], algo: PASSWORD_DEFAULT);
         try{
             $sql = "INSERT `users` SET  `email`= ?, `password` = ?";
             $stmt =self::conn()->prepare($sql);
@@ -36,13 +36,13 @@ class User extends DataBase implements AuthentificationInterface
             $stmt->bindValue(2, $password, \PDO::PARAM_STR);
             if(!$stmt->execute()) return  false;
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
        
         return true;
     }
 
-    public  function getUser(): mixed
+    public  function getUser(): null|object 
     {
         try {
             $sql = "SELECT `email`, `password` FROM `users` WHERE `email`= ? ";
@@ -51,11 +51,11 @@ class User extends DataBase implements AuthentificationInterface
             $stmt->execute();
             $user = $stmt->fetch();
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
         if(!$user) return null;
 
-        if (password_verify($_POST['password'], @$user->password)) return $user;
+        if (password_verify(password: $_POST['password'], hash: @$user->password)) return $user;
 
         return null;  
     }
