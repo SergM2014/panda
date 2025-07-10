@@ -35,17 +35,17 @@ class Dispatcher
             $controller = $this->handle(method: $method);
             if(!empty($controller) AND (strtolower(string: $_SERVER['REQUEST_METHOD']) == $method OR $method == 'any' )) {
                 return $controller;
-             }
+            }
         }
         return NOT_FOUND_ROUTE;
     }
 
     private function handle($method): mixed
     {
-         if(!isset($this->routes[$method])) return [];
-         $keys = array_keys(array: $this->routes[$method]);
+        if(!isset($this->routes[$method])) return [];
+        $keys = array_keys(array: $this->routes[$method]);
   
-         for($i = 0; $i < count(value: $keys); $i++){
+        for($i = 0; $i < count(value: $keys); $i++){
             $keys[$i] = trim(string: $keys[$i], characters: '/');
         }
 
@@ -69,7 +69,7 @@ class Dispatcher
         } else {
             if(isset($uriSegments[1]) AND isset($uriSegments[2])) $uri = implode(separator: '/',array: [$uriSegments[1], $uriSegments[2]]);
             if(isset($uriSegments[2]) AND isset($uriSegments[3])) $uri = implode(separator: '/',array: [$uri, $uriSegments[3]]);
-         } 
+        } 
 
         if(!isset($uri) ) { 
             if(isset($uriSegments[1])) $uri = $uriSegments[1]; 
