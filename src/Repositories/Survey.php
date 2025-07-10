@@ -27,7 +27,7 @@ class Survey extends DataBase implements SurveyRepositoryInterface
 
             if(!$stmt->execute()) return  false;
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
 
         return true;
@@ -42,7 +42,7 @@ class Survey extends DataBase implements SurveyRepositoryInterface
             $stmt->execute();
             $surveys = $stmt->fetchAll(\PDO::FETCH_OBJ);
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
 
         return $surveys;
@@ -58,7 +58,7 @@ class Survey extends DataBase implements SurveyRepositoryInterface
             $stmt->execute();
             $surveys = $stmt->fetchAll(\PDO::FETCH_OBJ);
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
         
         return $surveys;
@@ -72,7 +72,7 @@ class Survey extends DataBase implements SurveyRepositoryInterface
             $stmt->bindValue(1, $_POST['id'], \PDO::PARAM_INT);
             if($stmt->execute()) return true;
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
         return false;
     }
@@ -87,12 +87,12 @@ class Survey extends DataBase implements SurveyRepositoryInterface
             $stmt->execute();
             $survey = $stmt->fetch();
 
-            $obj = json_decode($survey->responses, true);
+            $obj = json_decode(json: $survey->responses, associative: true);
             $survey->responses = $obj;
-            $obj = json_decode($survey->results, true);
+            $obj = json_decode(json: $survey->results, associative: true);
             $survey->results = $obj;
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
         return $survey;  
     }
@@ -110,7 +110,7 @@ class Survey extends DataBase implements SurveyRepositoryInterface
 
             if(!$stmt->execute()) return  false;
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
 
         return true;
@@ -125,7 +125,7 @@ class Survey extends DataBase implements SurveyRepositoryInterface
             $stmt->execute();
             $survey = $stmt->fetch(\PDO::FETCH_OBJ);
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
         if($survey) return $survey;
         
@@ -143,7 +143,7 @@ class Survey extends DataBase implements SurveyRepositoryInterface
             $stmt->execute();
             $user = $stmt->fetch();
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
         return $user->id;  
     }
@@ -157,7 +157,7 @@ class Survey extends DataBase implements SurveyRepositoryInterface
             $stmt->execute();
             $header = $stmt->fetch();
         } catch (\PDOException $ex) { 
-            $this->prozessException($ex->getMessage());
+            $this->prozessException(messageToLog: $ex->getMessage());
         }
         if ($header) return false;
 
