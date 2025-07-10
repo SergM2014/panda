@@ -21,7 +21,7 @@ class Survey extends Controller
 
     public function create(): void
     {
-         view (view: 'createSurvey.php');
+        view (view: 'createSurvey.php');
     }
 
     public function store(): void
@@ -93,19 +93,15 @@ class Survey extends Controller
     private function checkValidationError(): array
     {
         $header = $_POST['header'];
-        $responses = array_filter($_POST['response']);
+        $responses = array_filter(array: $_POST['response']);
 
         $validationErrors = [];
 
-        if (empty($header)) {
-            $validationErrors['header'] = 'Input required';
-        }
-        if (empty($responses)) {
-            $validationErrors['response'] = 'Input required';
-        }
-        if (!$this->checkOnlyNumber()) {
-                $validationErrors['vote']= 'Only integers ere required'; 
-            }
+        if (empty($header)) $validationErrors['header'] = 'Input required';
+        
+        if (empty($responses)) $validationErrors['response'] = 'Input required';
+        
+        if (!$this->checkOnlyNumber()) $validationErrors['vote']= 'Only integers are required';
         
         return $validationErrors;    
     }
