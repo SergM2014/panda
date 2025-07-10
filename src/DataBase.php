@@ -40,11 +40,5 @@ class DataBase {
 
 
         }catch(\PDOException $e) {die("Ошибка соединения с базой или хостом:".$e->getMessage());}
-
-
     }
-
-
 }
-
-?>
