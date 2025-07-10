@@ -92,7 +92,6 @@ class Survey extends Controller
 
     private function checkValidationError(): array
     {
-
         $header = $_POST['header'];
         $responses = array_filter($_POST['response']);
 
